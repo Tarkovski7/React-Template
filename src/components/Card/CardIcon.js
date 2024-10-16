@@ -1,26 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
-import { makeStyles } from "@mui/styles"; // MUI v5 uyumlu
-import styles from "../../assets/jss/material-dashboard/components/cardIconStyle";
+import clsx from "clsx"; // classnames yerine clsx kullanıldı
+import { styled } from "@mui/material/styles"; // MUI v5'te styled API kullanımı
+import styles from "../../assets/jss/material-dashboard/components/cardIconStyle"; // Stil dosyası
 
-const useStyles = makeStyles(styles);
+// Styled API ile CardIcon bileşenini oluşturuyoruz
+const StyledCardIcon = styled("div")(({ theme, color }) => ({
+  ...styles.cardIcon(theme),
+  ...(color && styles[`${color}CardHeader`](theme)), // Dinamik renk uygulaması
+}));
 
 export default function CardIcon(props) {
-  const classes = useStyles();
   const { className, children, color, ...rest } = props;
 
-  // Dinamik class ataması
-  const cardIconClasses = classNames({
-    [classes.cardIcon]: true,
-    [classes[color + "CardHeader"]]: color,
-    [className]: className !== undefined,
+  // Dinamik class oluşturma
+  const cardIconClasses = clsx({
+    [className]: className !== undefined, // Eğer ekstra class varsa eklenir
   });
 
   return (
-    <div className={cardIconClasses} {...rest}>
+    <StyledCardIcon color={color} className={cardIconClasses} {...rest}>
       {children}
-    </div>
+    </StyledCardIcon>
   );
 }
 
@@ -33,6 +34,6 @@ CardIcon.propTypes = {
     "info",
     "primary",
     "rose",
-  ]), // Seçilebilir renkler sınırlı tutuldu
-  children: PropTypes.node.isRequired, // children zorunlu hale getirildi
+  ]), // Seçilebilir renkler sınırlı
+  children: PropTypes.node.isRequired, // children zorunlu
 };

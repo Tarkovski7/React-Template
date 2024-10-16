@@ -1,21 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// @mui/styles components
-import { makeStyles } from "@mui/styles"; // MUI v5'te bu hâlâ geçerli
+// MUI v5 styled API kullanımı
+import { styled } from "@mui/material/styles";
+import styles from "../../assets/jss/material-dashboard/components/badgeStyle"; // Mevcut stiller
 
-import styles from "../../assets/jss/material-dashboard/components/badgeStyle";
-
-const useStyles = makeStyles(styles);
+// MUI v5 ile styled API kullanarak Badge bileşenini oluşturuyoruz
+const StyledBadge = styled("span")(({ theme, color }) => ({
+  ...styles.badge(theme),
+  ...(color && styles[color]), // Eğer color varsa ilgili stili uygula
+}));
 
 export default function Badge(props) {
   const { color, children } = props;
-  const classes = useStyles();
 
   // Badge stilini ve renk sınıfını dinamik olarak oluşturuyoruz
-  return (
-    <span className={`${classes.badge} ${classes[color]}`}>{children}</span>
-  );
+  return <StyledBadge color={color}>{children}</StyledBadge>;
 }
 
 Badge.propTypes = {

@@ -1,14 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
-import { makeStyles } from "@mui/styles"; // MUI v5'te bu hâlâ geçerli
+import clsx from "clsx"; // classnames yerine clsx kullanıldı
 
-import styles from "../../assets/jss/material-dashboard/components/cardStyle"; // styles dosyanız mevcutsa bunu güncel tutun
+// MUI v5 styled API kullanımı
+import { styled } from "@mui/material/styles";
+import styles from "../../assets/jss/material-dashboard/components/cardStyle"; // Mevcut stiller
 
-const useStyles = makeStyles(styles);
+// MUI v5 ile styled API kullanarak Card bileşenini oluşturuyoruz
+const StyledCard = styled("div")(({ theme, plain, profile, blog, raised, background, pricing, color, product, testimonial, chart, login }) => ({
+  ...styles.card(theme),
+  ...(plain && styles.cardPlain),
+  ...(profile || testimonial ? styles.cardProfile : {}),
+  ...(blog && styles.cardBlog),
+  ...(raised && styles.cardRaised),
+  ...(background && styles.cardBackground),
+  ...(pricing && (color || background) ? styles.cardPricingColor : {}),
+  ...(color && styles[color]),
+  ...(pricing && styles.cardPricing),
+  ...(product && styles.cardProduct),
+  ...(chart && styles.cardChart),
+  ...(login && styles.cardLogin),
+}));
 
 export default function Card(props) {
-  const classes = useStyles();
   const {
     className,
     children,
@@ -26,29 +40,30 @@ export default function Card(props) {
     ...rest
   } = props;
 
-  // classNames fonksiyonu ile CSS class'larını dinamik olarak oluşturuyoruz
-  const cardClasses = classNames({
-    [classes.card]: true,
-    [classes.cardPlain]: plain,
-    [classes.cardProfile]: profile || testimonial,
-    [classes.cardBlog]: blog,
-    [classes.cardRaised]: raised,
-    [classes.cardBackground]: background,
-    [classes.cardPricingColor]:
-      (pricing && color !== undefined) || (pricing && background !== undefined),
-    [classes[color]]: color, // Eğer `color` varsa ilgili stil uygulanacak
-    [classes.cardPricing]: pricing,
-    [classes.cardProduct]: product,
-    [classes.cardChart]: chart,
-    [classes.cardLogin]: login,
+  // Dinamik class oluşturma
+  const cardClasses = clsx({
     [className]: className !== undefined, // Ekstra class varsa eklenecek
   });
 
   // Oluşan class'lar ile div oluşturuluyor
   return (
-    <div className={cardClasses} {...rest}>
+    <StyledCard
+      plain={plain}
+      profile={profile}
+      blog={blog}
+      raised={raised}
+      background={background}
+      pricing={pricing}
+      color={color}
+      product={product}
+      testimonial={testimonial}
+      chart={chart}
+      login={login}
+      className={cardClasses}
+      {...rest}
+    >
       {children}
-    </div>
+    </StyledCard>
   );
 }
 
