@@ -1,13 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
-import { makeStyles } from "@mui/styles"; // MUI v5 ile uyumlu
-import styles from "../../assets/jss/material-dashboard/components/cardHeaderStyle";
+import clsx from "clsx"; // classnames yerine clsx kullanıldı
+import { styled } from "@mui/material/styles"; // MUI v5'te styled API kullanımı
+import styles from "../../assets/jss/material-dashboard/components/cardHeaderStyle"; // Stil dosyası
 
-const useStyles = makeStyles(styles);
+// Styled API ile CardHeader bileşenini oluşturuyoruz
+const StyledCardHeader = styled("div")(({ theme, color, plain, image, contact, signup, stats, icon, text }) => ({
+  ...styles.cardHeader(theme),
+  ...(color && styles[`${color}CardHeader`](theme)),
+  ...(plain && styles.cardHeaderPlain(theme)),
+  ...(image && styles.cardHeaderImage(theme)),
+  ...(contact && styles.cardHeaderContact(theme)),
+  ...(signup && styles.cardHeaderSignup(theme)),
+  ...(stats && styles.cardHeaderStats(theme)),
+  ...(icon && styles.cardHeaderIcon(theme)),
+  ...(text && styles.cardHeaderText(theme)),
+}));
 
 export default function CardHeader(props) {
-  const classes = useStyles();
   const {
     className,
     children,
@@ -22,24 +32,26 @@ export default function CardHeader(props) {
     ...rest
   } = props;
 
-  // Dinamik class ataması
-  const cardHeaderClasses = classNames({
-    [classes.cardHeader]: true,
-    [classes[color + "CardHeader"]]: color,
-    [classes.cardHeaderPlain]: plain,
-    [classes.cardHeaderImage]: image,
-    [classes.cardHeaderContact]: contact,
-    [classes.cardHeaderSignup]: signup,
-    [classes.cardHeaderStats]: stats,
-    [classes.cardHeaderIcon]: icon,
-    [classes.cardHeaderText]: text,
-    [className]: className !== undefined, // Eğer className tanımlanmışsa eklenir
+  // Dinamik class oluşturma
+  const cardHeaderClasses = clsx({
+    [className]: className !== undefined, // Eğer ekstra class varsa eklenecek
   });
 
   return (
-    <div className={cardHeaderClasses} {...rest}>
+    <StyledCardHeader
+      color={color}
+      plain={plain}
+      image={image}
+      contact={contact}
+      signup={signup}
+      stats={stats}
+      icon={icon}
+      text={text}
+      className={cardHeaderClasses}
+      {...rest}
+    >
       {children}
-    </div>
+    </StyledCardHeader>
   );
 }
 
@@ -60,5 +72,5 @@ CardHeader.propTypes = {
   stats: PropTypes.bool,
   icon: PropTypes.bool,
   text: PropTypes.bool,
-  children: PropTypes.node.isRequired, // `children` zorunlu hale getirildi
+  children: PropTypes.node.isRequired, // Children zorunlu
 };

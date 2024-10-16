@@ -1,26 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
-import { makeStyles } from "@mui/styles"; // MUI v5 uyumlu
-import styles from "../../assets/jss/material-dashboard/components/cardTextStyle";
+import clsx from "clsx"; // classnames yerine clsx kullanıldı
+import { styled } from "@mui/material/styles"; // MUI v5'te styled API kullanımı
+import styles from "../../assets/jss/material-dashboard/components/cardTextStyle"; // Stil dosyası
 
-const useStyles = makeStyles(styles);
+// Styled API ile CardText bileşenini oluşturuyoruz
+const StyledCardText = styled("div")(({ theme, color }) => ({
+  ...styles.cardText(theme),
+  ...(color && styles[`${color}CardHeader`](theme)), // Dinamik renk uygulaması
+}));
 
 export default function CardText(props) {
-  const classes = useStyles();
   const { className, children, color, ...rest } = props;
 
-  // Dinamik class ataması
-  const cardTextClasses = classNames({
-    [classes.cardText]: true,
-    [classes[color + "CardHeader"]]: color,
-    [className]: className !== undefined,
+  // Dinamik class oluşturma
+  const cardTextClasses = clsx({
+    [className]: className !== undefined, // Eğer ekstra class varsa eklenir
   });
 
   return (
-    <div className={cardTextClasses} {...rest}>
+    <StyledCardText color={color} className={cardTextClasses} {...rest}>
       {children}
-    </div>
+    </StyledCardText>
   );
 }
 
@@ -33,6 +34,6 @@ CardText.propTypes = {
     "info",
     "primary",
     "rose",
-  ]), // Seçilebilir renkler sınırlı tutuldu
-  children: PropTypes.node.isRequired, // children zorunlu hale getirildi
+  ]), // Seçilebilir renkler sınırlı
+  children: PropTypes.node.isRequired, // children zorunlu
 };

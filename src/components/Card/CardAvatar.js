@@ -1,13 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
-import { makeStyles } from "@mui/styles"; // MUI v5'te hâlâ geçerli
-import styles from "../../assets/jss/material-dashboard/components/cardAvatarStyle";
+import clsx from "clsx"; // classnames yerine clsx kullanıldı
+import { styled } from "@mui/material/styles"; // MUI v5'te styled API kullanımı
+import styles from "../../assets/jss/material-dashboard/components/cardAvatarStyle"; // Stiller
 
-const useStyles = makeStyles(styles);
+// Styled API ile CardAvatar bileşenini oluşturuyoruz
+const StyledCardAvatar = styled("div")(({ theme, plain, profile, testimonial, testimonialFooter }) => ({
+  ...styles.cardAvatar(theme),
+  ...(profile && styles.cardAvatarProfile),
+  ...(plain && styles.cardAvatarPlain),
+  ...(testimonial && styles.cardAvatarTestimonial),
+  ...(testimonialFooter && styles.cardAvatarTestimonialFooter),
+}));
 
 export default function CardAvatar(props) {
-  const classes = useStyles();
   const {
     children,
     className,
@@ -18,20 +24,22 @@ export default function CardAvatar(props) {
     ...rest
   } = props;
 
-  // Dinamik olarak className'leri oluşturuyoruz
-  const cardAvatarClasses = classNames({
-    [classes.cardAvatar]: true,
-    [classes.cardAvatarProfile]: profile,
-    [classes.cardAvatarPlain]: plain,
-    [classes.cardAvatarTestimonial]: testimonial,
-    [classes.cardAvatarTestimonialFooter]: testimonialFooter,
-    [className]: className !== undefined, // Eğer extra class varsa ekleniyor
+  // Dinamik class oluşturma
+  const cardAvatarClasses = clsx({
+    [className]: className !== undefined, // Eğer ekstra class varsa eklenecek
   });
 
   return (
-    <div className={cardAvatarClasses} {...rest}>
+    <StyledCardAvatar
+      plain={plain}
+      profile={profile}
+      testimonial={testimonial}
+      testimonialFooter={testimonialFooter}
+      className={cardAvatarClasses}
+      {...rest}
+    >
       {children}
-    </div>
+    </StyledCardAvatar>
   );
 }
 
