@@ -10,6 +10,7 @@ function App() {
     //   </div>
     // </div>
         <CardDeneme></CardDeneme>
+        //Bu satır gelmeli
   );
 }
 
