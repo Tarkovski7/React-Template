@@ -11,6 +11,11 @@ function App() {
     // </div>
         <CardDeneme></CardDeneme>
         //Bu satır gelmeli
+        //Bu satır gelmeli
+        //Bu satır gelmeli
+        //Bu satır gelmeli
+        //Bu satır gelmeli
+        //Bu satır gelmeli
   );
 }
 
